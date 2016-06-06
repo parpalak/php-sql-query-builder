@@ -82,11 +82,11 @@ class JoinQuery
     }
 
     /**
-     * @param string   $table
-     * @param string   $selfColumn
-     * @param string   $refColumn
-     * @param string[] $columns
-     * @param string   $joinType
+     * @param string|array $table
+     * @param string       $selfColumn
+     * @param string       $refColumn
+     * @param string[]     $columns
+     * @param string       $joinType
      *
      * @return Select
      */
@@ -97,7 +97,16 @@ class JoinQuery
         $columns = [],
         $joinType = null
     ) {
-        if (!isset($this->joins[$table])) {
+        if (\is_array($table) && !empty($table)) {
+            $key = \key($table);
+
+            $tableName = is_numeric($key) ? \current($table) : $key;
+        }
+        else {
+            $tableName = $table;
+        }
+
+        if (!isset($this->joins[$tableName])) {
             $select = QueryFactory::createSelect($table);
             $select->setColumns($columns);
             $select->setJoinType($joinType);
@@ -105,7 +114,7 @@ class JoinQuery
             $this->addJoin($select, $selfColumn, $refColumn);
         }
 
-        return $this->joins[$table];
+        return $this->joins[$tableName];
     }
 
     /**
@@ -118,18 +127,18 @@ class JoinQuery
     public function addJoin(Select $select, $selfColumn, $refColumn)
     {
         $select->isJoin(true);
-        $table = $select->getTable()->getName();
+        $queryTableName = $select->getTable()->getAliasOrName();
 
-        if (!isset($this->joins[$table])) {
+        if (!isset($this->joins[$queryTableName])) {
             $newColumn = array($selfColumn);
             $select->joinCondition()->equals(
                 $refColumn,
                 SyntaxFactory::createColumn($newColumn, $this->select->getTable())
             );
-            $this->joins[$table] = $select;
+            $this->joins[$queryTableName] = $select;
         }
 
-        return $this->joins[$table];
+        return $this->joins[$queryTableName];
     }
 
     /**

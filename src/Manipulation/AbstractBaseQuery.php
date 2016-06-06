@@ -34,7 +34,7 @@ abstract class AbstractBaseQuery implements QueryInterface, QueryPartInterface
     protected $builder;
 
     /**
-     * @var string
+     * @var array
      */
     protected $table;
 
@@ -157,19 +157,17 @@ abstract class AbstractBaseQuery implements QueryInterface, QueryPartInterface
      */
     public function getTable()
     {
-        $newTable = array($this->table);
-
-        return \is_null($this->table) ? null : SyntaxFactory::createTable($newTable);
+        return \is_null($this->table) ? null : SyntaxFactory::createTable($this->table);
     }
 
     /**
-     * @param string $table
+     * @param array|string $table
      *
      * @return $this
      */
     public function setTable($table)
     {
-        $this->table = (string) $table;
+        $this->table = (array) $table;
 
         return $this;
     }

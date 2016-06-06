@@ -282,7 +282,7 @@ class Where
             return $column;
         }
 
-        $newColumn = [$column];
+        $newColumn = (array) $column;
 
         return SyntaxFactory::createColumn($newColumn, $this->getTable());
     }

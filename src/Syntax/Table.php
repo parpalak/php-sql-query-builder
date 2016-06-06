@@ -104,6 +104,14 @@ class Table
     }
 
     /**
+     * @return string
+     */
+    public function getAliasOrName()
+    {
+        return $this->alias ? : $this->name;
+    }
+
+    /**
      * @param string $alias
      *
      * @return $this

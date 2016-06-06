@@ -35,8 +35,13 @@ class Column implements QueryPartInterface
     protected $alias;
 
     /**
+     * @var string
+     */
+    protected $tableAlias;
+
+    /**
      * @param string $name
-     * @param string $table
+     * @param array|string|Table $table
      * @param string $alias
      */
     public function __construct($name, $table, $alias = '')
@@ -69,7 +74,14 @@ class Column implements QueryPartInterface
      */
     public function setName($name)
     {
-        $this->name = (string) $name;
+        $name = (string) $name;
+
+        if (strpos($name, '.') !== false) {
+            list($tableAlias, $name) = explode('.', $name, 2);
+            $this->tableAlias = $tableAlias;
+        }
+
+        $this->name = $name;
 
         return $this;
     }
@@ -83,14 +95,13 @@ class Column implements QueryPartInterface
     }
 
     /**
-     * @param string $table
+     * @param array|string|Table $table
      *
      * @return $this
      */
     public function setTable($table)
     {
-        $newTable = array($table);
-        $this->table = SyntaxFactory::createTable($newTable);
+        $this->table = $table instanceof Table ? $table : SyntaxFactory::createTable($table);
 
         return $this;
     }
@@ -135,5 +146,15 @@ class Column implements QueryPartInterface
     public function isAll()
     {
         return $this->getName() == self::ALL;
+    }
+
+    /**
+     * Returns associated table prefix
+     *
+     * @return string
+     */
+    public function getTableAlias()
+    {
+        return $this->tableAlias;
     }
 }

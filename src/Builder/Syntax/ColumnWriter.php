@@ -151,7 +151,7 @@ class ColumnWriter
      */
     public function writeColumn(Column $column)
     {
-        $alias = $column->getTable()->getAlias();
+        $alias = $column->getTableAlias() ? : $column->getTable()->getAlias();
         $table = ($alias) ? $this->writer->writeTableAlias($alias) : $this->writer->writeTable($column->getTable());
 
         $columnString = (empty($table)) ? '' : "{$table}.";
