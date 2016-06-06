@@ -217,6 +217,16 @@ abstract class AbstractBaseQuery implements QueryInterface, QueryPartInterface
     }
 
     /**
+     * @return $this
+     */
+    public function resetOrderBy()
+    {
+        $this->orderBy = [];
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getLimitCount()
