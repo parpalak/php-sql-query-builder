@@ -76,12 +76,12 @@ class Column implements QueryPartInterface
     {
         $name = (string) $name;
 
-        if (strpos($name, '.') !== false) {
-            list($tableAlias, $name) = explode('.', $name, 2);
-            $this->tableAlias = $tableAlias;
+        if (strpos($name, '.') !== false && preg_match('/^(\w+)\.(\w+)$/', $name, $matches)) {
+            $this->tableAlias = $matches[1];
+            $this->name = $matches[2];
+        } else {
+            $this->name = $name;
         }
-
-        $this->name = $name;
 
         return $this;
     }
